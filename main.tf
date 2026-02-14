@@ -1,5 +1,5 @@
 locals {
-  sn = concat(var.subnets[*].public, true)
+  sn = concat(var.subnets[*].public, [true])
 }
 
 data "aws_ami" "ubuntu" {
@@ -60,6 +60,7 @@ module "instances" {
       ]
     ])
     ami_id = data.aws_ami.ubuntu.id
+    key_pair = var.key_pair
 }
 
 locals {
@@ -74,5 +75,6 @@ module "bastion_host" {
   ami_id = data.aws_ami.ubuntu.id
   sn_id = local.bastion_sn_id
   trusted_host = var.trusted_host
-  instances_sg = module.instances.sg[*].id
+  instances_sg = module.instances.sg
+  key_pair = var.key_pair
 }

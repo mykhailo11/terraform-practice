@@ -19,11 +19,16 @@ variable "sn_id" {
 }
 
 variable "instances_sg" {
-    type = set(string)
+    type = map(any)
     description = "Security groups of all instances within the VPC"
 }
 
 variable "trusted_host" {
     type = string
     description = "Trusted host"
+}
+
+variable "key_pair" {
+    type = string
+    description = "Key pair"
 }

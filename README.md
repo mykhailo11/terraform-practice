@@ -46,6 +46,36 @@ Subnets will be automatically assigned on different availability zones based on 
 
 I decided to create all the necessary configuration (subnet, security groups, etc) in a separate module, because as number of instances grow it is important to keep all the rules in one place, calculated dynamically based on the amount of managed units
 
+It is important to set trusted host before trying to tunnel into VPC instances, otherwise SSH will reject any connections
+
+> Using trusted host prevents connections from AWS Management Console
+
+In order to connect from current machine, set the value of the trusted host to the output of the following request, it will update only firewall rules:
+
+```
+curl ifconfig.me
+```
+
+Trying to SSH into instance using inline proxy jump (-J) didn't work, so one of the ways I've found is using /.ssh/config
+
+```
+HOST aws_bastion
+   hostname *ip*
+   user ubuntu
+   IdentityFile *key pair path*
+
+HOST aws_instance_one
+   hostname *private ip*
+   user ubuntu
+   IdentityFile *key pair path*
+   ProxyJump aws_bastion
+
+...
+
+```
+
+The advantage over using the agent forwarding is that the key is not saved on the proxy instance (bastion host)
+
 ## Missing functionality
 There is still a space for improvements. Among the possible options I see:
 - Assign a key pair for public instances in order to have ssh pre-configured
@@ -56,3 +86,4 @@ resource "aws_vpc_security_group_ingress_rule" "ingress_ref_sg_rule" {
   ...
 ```
 - Store terraform state on a remote host (either terraform registry or AWS backend)
+- Keep trusted host value in a more secure place

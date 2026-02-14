@@ -27,3 +27,8 @@ variable "ami_id" {
     type = string
     description = "AMI ID used for instances"
 }
+
+variable "key_pair" {
+    type = string
+    description = "Key pair"
+}

@@ -2,7 +2,8 @@ region = "us-east-1"
 cidr_block = "10.0.0.0/16"
 cidr_block_sn = "10.0.%d.0/24"
 environment = "dev"
-trusted_host = "188.130.177.106"
+trusted_host = "213.231.3.155"
+key_pair = "default-key-pair"
 subnets = [
     {
         public = true

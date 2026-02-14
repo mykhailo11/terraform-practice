@@ -7,14 +7,19 @@ resource "aws_security_group" "sg" {
     }
 }
 
+data "aws_key_pair" "key_pair" {
+  key_name = var.key_pair
+}
+
 resource "aws_instance" "bastion" {
     ami = var.ami_id
     instance_type = "t2.micro"
     subnet_id = var.sn_id
     vpc_security_group_ids = [ aws_security_group.sg.id ]
+    key_name = data.aws_key_pair.key_pair.key_name
     
     tags = {
-      Name = "instance_${each.key}"
+      Name = "instance_bastion"
       Environment = var.env
     }
 
@@ -34,12 +39,12 @@ resource "aws_vpc_security_group_egress_rule" "egress_rule" {
   from_port = 22
   to_port = 22
   ip_protocol = "tcp"
-  referenced_security_group_id = each.value
+  referenced_security_group_id = each.value.id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ingress_rule" {
   for_each = var.instances_sg
-  security_group_id = each.value
+  security_group_id = each.value.id
   from_port = 22
   to_port = 22
   ip_protocol = "tcp"

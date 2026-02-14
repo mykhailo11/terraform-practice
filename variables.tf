@@ -40,3 +40,8 @@ variable "trusted_host" {
     type = string
     description = "Trusted host"
 }
+
+variable "key_pair" {
+    type = string
+    description = "Key pair"
+}
