@@ -52,7 +52,7 @@ It is important to set trusted host before trying to tunnel into VPC instances, 
 
 In order to connect from current machine, set the value of the trusted host to the output of the following request, it will update only firewall rules:
 
-```
+```bash
 curl ifconfig.me
 ```
 
@@ -80,10 +80,10 @@ The advantage over using the agent forwarding is that the key is not saved on th
 There is still a space for improvements. Among the possible options I see:
 - Assign a key pair for public instances in order to have ssh pre-configured
 - Replace the rule name. now there is only one ingress / egress rule per instance, but for multiple rules of the same type the latest one may override previous
-```
-resource "aws_vpc_security_group_ingress_rule" "ingress_ref_sg_rule" {
-  for_each = { for index, rule in local.rules : rule["name"] => rule if rule.ingress_ref && contains(keys(aws_security_group.sg), rule["ref"]) }
+  ```terraform
+  resource "aws_vpc_security_group_ingress_rule" "ingress_ref_sg_rule" {
+      for_each = { for index, rule in local.rules : rule["name"] => rule if rule.ingress_ref && contains(keys(aws_security_group.sg), rule["ref"]) }
   ...
-```
+  ```
 - Store terraform state on a remote host (either terraform registry or AWS backend)
 - Keep trusted host value in a more secure place
